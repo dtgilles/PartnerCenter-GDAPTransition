@@ -4,11 +4,11 @@ namespace PartnerLed.Utility
 {
     internal class Constants
     {
-        public static readonly string InputFolderPath = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent.FullName + "/GDAPBulkMigration/operations";
+        public static readonly string InputFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/GDAPBulkMigration/operations";
 
-        public static readonly string OutputFolderPath = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent.FullName + "/GDAPBulkMigration/downloads";
+        public static readonly string OutputFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/GDAPBulkMigration/downloads";
         
-        public static readonly string LogFolderPath = Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent.FullName + "/Logs";
+        public static readonly string LogFolderPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "/Logs";
 
         public const string BasepathVariable = "BasepathForOperations";
 

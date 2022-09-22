@@ -16,6 +16,8 @@ namespace PartnerLed
 
         public HttpClient Client { get { return new HttpClient(); } }
 
+        public string GdapRefreshToken { get; set; }
+
         private void init()
         {
             var env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");

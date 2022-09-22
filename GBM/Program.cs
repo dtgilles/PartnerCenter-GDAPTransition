@@ -29,6 +29,27 @@ using IHost host = Host.CreateDefaultBuilder(args)
         logging.ClearProviders().AddCustomLogger();
     }).Build();
 
+//Expect token from .exe arguments.
+if (args.Length == 2 && args[0] == "-refreshToken")
+{
+    if (args[0] == "-refreshToken")
+    {
+        AppSetting.GdapRefreshToken = args[1];
+    }
+}
+// If no arguments passed, attempt to get it from machine environment varaible.
+// Warning: Refresh token are high-privileged tokens.
+else
+{
+    Console.WriteLine("Mising refreshToken parameter. Attempting to read refresh tkoen from the machine environment variables..");
+    AppSetting.GdapRefreshToken = Environment.GetEnvironmentVariable("gbmRefreshToken", EnvironmentVariableTarget.Machine);
+
+    if (string.IsNullOrEmpty(AppSetting.GdapRefreshToken))
+    {
+        Console.WriteLine("Could not get refresh token to authenticate. Exiting application.");
+        Environment.Exit(1);
+    }
+}
 
 await RunAsync(host.Services);
 await host.RunAsync();
@@ -111,7 +132,7 @@ static bool checkPrerequisites(IServiceProvider serviceProvider)
 
 static void setupDirectory()
 {
-    Environment.SetEnvironmentVariable(Constants.BasepathVariable, Directory.GetParent(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)).Parent.Parent.FullName);
+    Environment.SetEnvironmentVariable(Constants.BasepathVariable, Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
     Directory.CreateDirectory($"{Constants.InputFolderPath}/gdapRelationship");
     Directory.CreateDirectory($"{Constants.InputFolderPath}/accessAssignment");
     Directory.CreateDirectory(Constants.OutputFolderPath);

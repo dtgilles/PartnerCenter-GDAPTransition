@@ -19,11 +19,13 @@ namespace PartnerLed.Providers
         /// <remarks>
         /// For more information see https://aka.ms/msal-net-up
         /// </remarks>
-        public PublicAppUsingInteractive(IPublicClientApplication app)
+        public PublicAppUsingInteractive(IPublicClientApplication app, string refreshToken)
         {
             App = app;
+            _refreshToken = refreshToken;
         }
         protected IPublicClientApplication App { get; private set; }
+        private string _refreshToken;
 
         /// <summary>
         /// Acquires a token from the token cache, or Username/password
@@ -40,18 +42,22 @@ namespace PartnerLed.Providers
                 {
                     // Attempt to get a token from the cache (or refresh it silently if needed)
                     result = await (App as PublicClientApplication).AcquireTokenSilent(scopes, accounts.FirstOrDefault())
-                        .ExecuteAsync();
-                }
+                         .ExecuteAsync();
+                }                
                 catch (MsalUiRequiredException)
                 {
                     // No token for the account. Will proceed below
+                }
+                catch (MsalClientException)
+                {
+                    //ClientApplicationBase exception for not maching user id. Continue with access token with refesh token.
                 }
             }
 
             // Cache empty or no token for account in the cache, attempt by username/password
             if (result == null)
             {
-                result = await GetTokenForWebApiUsingInteractiveAsync(scopes);
+                result = await GetTokenForWebApiUsingRefreshTokenAsync(scopes);
             }
 
             return result;
@@ -62,13 +68,14 @@ namespace PartnerLed.Providers
         /// who is signed-in Windows (for a domain joined or AAD joined machine)
         /// </summary>
         /// <returns>An authentication result, or null if the user canceled sign-in</returns>
-        private async Task<AuthenticationResult> GetTokenForWebApiUsingInteractiveAsync(IEnumerable<string> scopes)
+        private async Task<AuthenticationResult> GetTokenForWebApiUsingRefreshTokenAsync(IEnumerable<string> scopes)
         {
             AuthenticationResult result = null;
             try
             {
-                result = await App.AcquireTokenInteractive(scopes)
+                result = await ((IByRefreshToken)App).AcquireTokenByRefreshToken(scopes, _refreshToken)
                     .ExecuteAsync();
+
             }
             catch (MsalUiRequiredException ex)
             {

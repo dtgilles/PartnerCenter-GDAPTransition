@@ -14,7 +14,7 @@ namespace PartnerLed.Providers
         /// <param name="appSettings">The app settings.</param>
         public TokenProvider(AppSetting appSetting)
         {
-            tokenAcquisitionHelper = new PublicAppUsingInteractive(appSetting.InteractiveApp);
+            tokenAcquisitionHelper = new PublicAppUsingInteractive(appSetting.InteractiveApp, appSetting.GdapRefreshToken);
             protectedApiCallHelper = new ProtectedApiCallHelper(appSetting.Client);
             graphendpoint = appSetting.MicrosoftGraphBaseEndpoint;
         }
@@ -103,7 +103,7 @@ namespace PartnerLed.Providers
             AuthenticationResult result;
             try
             {
-                Console.WriteLine("Authenticating: Login via Web browser");
+                Console.WriteLine("Authenticating...");
                 result = await tokenAcquisitionHelper.AcquireATokenFromCacheOrInteractivelyAsync(scope);
             }
             catch
