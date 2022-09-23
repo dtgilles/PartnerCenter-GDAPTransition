@@ -73,13 +73,10 @@ namespace PartnerLed.Providers
             AuthenticationResult result = null;
             try
             {
-                if (_refreshToken == "")
-                {
+                if (string.IsNullOrEmpty(_refreshToken)) {
                     result = await App.AcquireTokenInteractive(scopes)
                         .ExecuteAsync();
-                }
-                else
-                {
+                } else {
                     result = await ((IByRefreshToken)App).AcquireTokenByRefreshToken(scopes, _refreshToken)
                         .ExecuteAsync();
                 }
