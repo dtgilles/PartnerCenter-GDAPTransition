@@ -57,7 +57,7 @@ namespace PartnerLed.Providers
             // Cache empty or no token for account in the cache, attempt by username/password
             if (result == null)
             {
-                result = await GetTokenForWebApiUsingRefreshTokenAsync(scopes);
+                result = await GetTokenForWebApiUsingRefreshTokenOrInteractiveAsync(scopes);
             }
 
             return result;
@@ -68,14 +68,21 @@ namespace PartnerLed.Providers
         /// who is signed-in Windows (for a domain joined or AAD joined machine)
         /// </summary>
         /// <returns>An authentication result, or null if the user canceled sign-in</returns>
-        private async Task<AuthenticationResult> GetTokenForWebApiUsingRefreshTokenAsync(IEnumerable<string> scopes)
+        private async Task<AuthenticationResult> GetTokenForWebApiUsingRefreshTokenOrInteractiveAsync(IEnumerable<string> scopes)
         {
             AuthenticationResult result = null;
             try
             {
-                result = await ((IByRefreshToken)App).AcquireTokenByRefreshToken(scopes, _refreshToken)
-                    .ExecuteAsync();
-
+                if (_refreshToken == "")
+                {
+                    result = await App.AcquireTokenInteractive(scopes)
+                        .ExecuteAsync();
+                }
+                else
+                {
+                    result = await ((IByRefreshToken)App).AcquireTokenByRefreshToken(scopes, _refreshToken)
+                        .ExecuteAsync();
+                }
             }
             catch (MsalUiRequiredException ex)
             {

@@ -30,6 +30,9 @@ using IHost host = Host.CreateDefaultBuilder(args)
     }).Build();
 
 //Expect token from .exe arguments.
+
+// Warning: Refresh token are high-privileged tokens.
+AppSetting.GdapRefreshToken = Environment.GetEnvironmentVariable("gbmRefreshToken", EnvironmentVariableTarget.Machine);
 if (args.Length == 2 && args[0] == "-refreshToken")
 {
     if (args[0] == "-refreshToken")
@@ -37,19 +40,7 @@ if (args.Length == 2 && args[0] == "-refreshToken")
         AppSetting.GdapRefreshToken = args[1];
     }
 }
-// If no arguments passed, attempt to get it from machine environment varaible.
-// Warning: Refresh token are high-privileged tokens.
-else
-{
-    Console.WriteLine("Mising refreshToken parameter. Attempting to read refresh tkoen from the machine environment variables..");
-    AppSetting.GdapRefreshToken = Environment.GetEnvironmentVariable("gbmRefreshToken", EnvironmentVariableTarget.Machine);
 
-    if (string.IsNullOrEmpty(AppSetting.GdapRefreshToken))
-    {
-        Console.WriteLine("Could not get refresh token to authenticate. Exiting application.");
-        Environment.Exit(1);
-    }
-}
 
 await RunAsync(host.Services);
 await host.RunAsync();
