@@ -74,11 +74,15 @@ namespace PartnerLed.Providers
             try
             {
                 if (string.IsNullOrEmpty(_refreshToken)) {
+                    Console.WriteLine("refresh token is not given, get access token interactively ..");
                     result = await App.AcquireTokenInteractive(scopes)
                         .ExecuteAsync();
+                    Console.WriteLine(".. succeeded");
                 } else {
+                    Console.WriteLine("try to get access token by refresh token ..");
                     result = await ((IByRefreshToken)App).AcquireTokenByRefreshToken(scopes, _refreshToken)
                         .ExecuteAsync();
+                    Console.WriteLine(".. succeeded");
                 }
             }
             catch (MsalUiRequiredException ex)

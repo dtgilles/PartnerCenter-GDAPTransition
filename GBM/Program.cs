@@ -32,7 +32,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
 //Expect token from .exe arguments.
 
 // Warning: Refresh token are high-privileged tokens.
-AppSetting.GdapRefreshToken = Environment.GetEnvironmentVariable("gbmRefreshToken", EnvironmentVariableTarget.Machine);
+AppSetting.GdapRefreshToken = Environment.GetEnvironmentVariable("gbmRefreshToken", EnvironmentVariableTarget.Process);
 if (args.Length == 2 && args[0] == "-refreshToken")
 {
     if (args[0] == "-refreshToken")
