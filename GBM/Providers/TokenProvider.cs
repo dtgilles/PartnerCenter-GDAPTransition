@@ -106,8 +106,10 @@ namespace PartnerLed.Providers
                 Console.WriteLine("Authenticating...");
                 result = await tokenAcquisitionHelper.AcquireATokenFromCacheOrInteractivelyAsync(scope);
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
                 Console.WriteLine($"Exception while generating token");
                 throw;
             }
