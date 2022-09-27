@@ -69,13 +69,14 @@ static async Task RunAsync(IServiceProvider serviceProvider)
 SelectOption:
     Console.Write('>');
     var option = Console.ReadLine();
-    if (!short.TryParse(option, out short input) || !(input >= 1 && input <= 10))
+    if (!short.TryParse(option, out short input) || !(input >= 0 && input <= 10))
     {
         Console.WriteLine("Invalid input, Please try again.");
         DisplayOptions();
 
         goto SelectOption;
     }
+    if (input == 0) { System.Environment.Exit(1); }
 
     Stopwatch stopwatch = Stopwatch.StartNew();
 
@@ -101,7 +102,8 @@ SelectOption:
 
 static void DisplayOptions()
 {
-    Console.WriteLine("\nDownload operations: ");
+    Console.WriteLine("\nOperations: ");
+    Console.WriteLine("\t 0. Exit");
     Console.WriteLine("\t 1. Download eligible customers list");
     Console.WriteLine("\t 2. Download eligible customers for very large list (compressed format)");
     Console.WriteLine("\t 3. Download Example Azure AD Roles");
